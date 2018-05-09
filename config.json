@@ -1,0 +1,34 @@
+{
+  "global_settings": {
+    "headers": {
+    }
+  },
+  "init_urls": [
+    "https://www.v2ex.com/?tab=all",
+    "https://www.v2ex.com/?tab=tech",
+    "https://www.v2ex.com/?tab=jobs"
+  ],
+  "add_pages": [
+    {
+      "name": "artile_list",
+      "next_url_regex": "https://www.v2ex.com/t/(\\d+)",
+      "next_field": "//span[@class='item_title']/a/@href",
+      "next_extract_type": "xpath",
+      "extract_field": {
+      },
+      "sample_urls": [
+        "https://www.v2ex.com/t/453364#reply145"
+      ],
+      "add_pages": [
+        {
+          "name": "article_detail",
+          "extract_type": "xpath",
+          "extract_field": {
+            "title": "//div[@class='header']/h1/text()"
+          }
+        }
+      ]
+    }
+  ]
+}
+

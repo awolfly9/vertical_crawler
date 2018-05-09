@@ -1,0 +1,34 @@
+{
+  "global_settings": {
+    "headers": {
+    }
+  },
+  "init_urls": [
+    "http://awolfly9.com/"
+  ],
+  "add_pages": [
+    {
+      "name": "artile_list",
+      "next_url_regex": "http://awolfly9.com/article/(\\w+)$",
+      "next_field": "//a[@class='title']/@href",
+      "next_extract_type": "xpath",
+      "extract_field": {
+      },
+      "sample_urls": [
+        "http://awolfly9.com/article/tianjin"
+      ],
+      "add_pages": [
+        {
+          "name": "article_detail",
+          "extract_type": "xpath",
+          "extract_field": {
+            "title": "//h1[@class='post-title']/a/text()",
+            "post_date": "//p[@class='post-date']/text()",
+            "content": "//div[@class='post-wrapper']/div/p/text()"
+          }
+        }
+      ]
+    }
+  ]
+}
+
