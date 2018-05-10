@@ -2,12 +2,14 @@
 
 import re
 import json
+import sys
 import better_exceptions
 
 from urllib.parse import urljoin
 from cralwer_task import CrawlTask
 from download import Download
 from lxml.html import fromstring
+from jinja2 import Template
 
 better_exceptions.hook()
 
@@ -79,21 +81,17 @@ class Crawler(object):
         results = {}  # 查找输出结果，这里先不要考虑太复杂
         self.get_fields(body, next_field, results)
         print('results:%s' % results)
-        # for i, field in enumerate(next_field._fields):
-        #     field_value = getattr(next_field, field)
-        #     result = body.get(field)
-        #     if isinstance(field_value, list):
-        #         for item in field_value:
-        #             for field in item._fields:
-        #                 print('field__:%s' % field)
-        # print('field:%s field_value:%s' % (field, field_value))
-        # new_next_bodys = []
-        # for next_body in next_bodys:
-        #     new_next_bodys.extend(self.get_field(next_body, field))
-
-        # self.get_field(body, field)
-
-        # print(next_bodys)
+        template = Template(next.get('next_url_temp'))
+        min_len = sys.maxsize
+        key_list = results.keys()
+        for key, value_list in results.items():
+            min_len = min(min_len, len(value_list))
+        for i in range(0, min_len):
+            kwargs = {}
+            for key in key_list:
+                kwargs[key] = results[key][i]
+            url = template.render(kwargs)
+            print('url:%s' % url)
 
     # key 始终是要获取的值
     # value 命名
@@ -113,22 +111,10 @@ class Crawler(object):
         for key, field_value in field.items():
             if isinstance(body, dict):
                 new_body = body.get(key)
-
-                # if isinstance(field_value, list):
-                #     for value in field_value:
-                #         self.get_fields(new_body, value, results)
-                # elif isinstance(field_value, dict):
-                #     self.get_fields(new_body, field_value, results)
-                # elif isinstance(field_value, str):
-                #     if field_value not in results:
-                #         results[field_value] = []
-                #     else:
-                #         results[field_value].append(new_body)
                 get_field()
             elif isinstance(body, list):
                 for item in body:
                     new_body = item.get(key)
-
                     get_field()
 
     # 通过正则拿到下一个入口

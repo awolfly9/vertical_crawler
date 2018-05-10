@@ -16,6 +16,7 @@
       "name": "artile_list",
       "next": {
         "type": "json",
+        "next_url_temp": "http://api.jiefu.tv/app2/api/bq/article/detail.html?id={{this_is_id}}",
         "next_field": {
           "data": [
             {
