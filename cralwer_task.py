@@ -17,10 +17,10 @@ class CrawlTask(object):
             self.crawler_text_obj = text
             # print(self.crawler_json_obj)
 
-        crawler = self._load_from_json()
+        self.crawler = json.loads(text)
         # print(crawler)
-        for field in crawler._fields:
-            setattr(self, field, getattr(crawler, field))
+        # for field in crawler._fields:
+        #     setattr(self, field, getattr(crawler, field))
 
     def _json_object_hook(self, d):
         return namedtuple('crawler', d.keys())(*d.values())
@@ -30,6 +30,14 @@ class CrawlTask(object):
             self.crawler_text_obj,
             object_hook = self._json_object_hook
         )
+
+    @property
+    def init_urls(self):
+        return self.crawler.get('init_urls', [])
+
+    @property
+    def add_pages(self):
+        return self.crawler.get('add_pages', [])
 
 
 def extract_json_body(extract_fields, root):

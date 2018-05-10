@@ -9,20 +9,36 @@
     }
   },
   "init_urls": [
-    "https://www.v2ex.com/?tab=all",
-    "https://www.v2ex.com/?tab=tech",
-    "https://www.v2ex.com/?tab=jobs"
+    "http://api.jiefu.tv/app2/api/bq/article/list.html"
   ],
   "add_pages": [
     {
       "name": "artile_list",
-      "next_url_regex": "https://www.v2ex.com/t/(\\d+)",
-      "next_field": "//span[@class='item_title']/a/@href",
-      "next_extract_type": "xpath",
+      "next": {
+        "type": "json",
+        "next_field": {
+          "data": [
+            {
+              "title": "this_is_title",
+              "ts": "ts",
+              "userView": {
+                "id": "this_is_id",
+                "nickName": "user_name"
+              },
+              "itemView": {
+                "createTime": "createTime"
+              }
+            }
+          ]
+        }
+      },
+      "next_url_regex": "http://api.jiefu.tv/app2/api/bq/article/detail.html?id=(\\d+)",
+      "next_field": "data.userView.createTime",
+      "next_extract_type": "json",
       "extract_field": {
       },
       "sample_urls": [
-        "https://www.v2ex.com/t/453364#reply145"
+        "http://api.jiefu.tv/app2/api/bq/article/detail.html?id=4674"
       ],
       "add_pages": [
         {
@@ -30,27 +46,6 @@
           "extract_type": "xpath",
           "extract_field": {
             "title": "//div[@class='header']/h1/text()"
-          }
-        }
-      ]
-    },
-    {
-      "name": "click_user_info",
-      "next_url_regex": "",
-      "next_field": "//span[@class='topic_info']/strong[1]/a/@href",
-      "next_extract_type": "xpath",
-      "extract_field": {
-      },
-      "sample_urls": [
-        "https://www.v2ex.com/member/Arbhow"
-      ],
-      "add_pages": [
-        {
-          "name": "get_user_info",
-          "extract_type": "xpath",
-          "extract_field": {
-            "username": "//h1/text()",
-            "base_info": "//table/tbody/tr/td[3]/span[@class='gray']/text()"
           }
         }
       ]

@@ -16,8 +16,8 @@ class Download(object):
         print('download url:%s' % url)
         r = requests.get(url = url, proxies = self.proxies)
         url_path = url.replace('/', '_')
-        with open('log/%s.html' % url_path[-15:], 'w') as f:
-            f.write(r.text)
+        # with open('log/%s.html' % url_path[-15:], 'w') as f:
+        #     f.write(r.text)
         if r.status_code == 200:
             status = True
         else:
