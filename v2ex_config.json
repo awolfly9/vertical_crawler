@@ -1,0 +1,60 @@
+{
+  "global_settings": {
+    "headers": {},
+    "ua": {
+      "type": "pc_rand",
+      "ua_custom": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
+    },
+    "cookie": {
+    }
+  },
+  "init_urls": [
+    "https://www.v2ex.com/?tab=all",
+    "https://www.v2ex.com/?tab=tech",
+    "https://www.v2ex.com/?tab=jobs"
+  ],
+  "add_pages": [
+    {
+      "name": "artile_list",
+      "next_url_regex": "https://www.v2ex.com/t/(\\d+)",
+      "next_field": "//span[@class='item_title']/a/@href",
+      "next_extract_type": "xpath",
+      "extract_field": {
+      },
+      "sample_urls": [
+        "https://www.v2ex.com/t/453364#reply145"
+      ],
+      "add_pages": [
+        {
+          "name": "article_detail",
+          "extract_type": "xpath",
+          "extract_field": {
+            "title": "//div[@class='header']/h1/text()"
+          }
+        }
+      ]
+    },
+    {
+      "name": "click_user_info",
+      "next_url_regex": "",
+      "next_field": "//span[@class='topic_info']/strong[1]/a/@href",
+      "next_extract_type": "xpath",
+      "extract_field": {
+      },
+      "sample_urls": [
+        "https://www.v2ex.com/member/Arbhow"
+      ],
+      "add_pages": [
+        {
+          "name": "get_user_info",
+          "extract_type": "xpath",
+          "extract_field": {
+            "username": "//h1/text()",
+            "base_info": "//table/tbody/tr/td[3]/span[@class='gray']/text()"
+          }
+        }
+      ]
+    }
+  ]
+}
+
