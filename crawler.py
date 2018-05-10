@@ -13,18 +13,17 @@ from download import Download
 from lxml.html import fromstring
 
 
-# from lxml import etree
-
-
 class Crawler(object):
     def __init__(self, seed_id):
+        # 初始化抓取任务
         self.task = CrawlTask()
+        # 初始化下载下载接口
+        self.download = Download(self.task)
 
     def run_page_actions(self):
         for url in self.task.init_urls:
             print('init_url:%s' % url)
-            dl = Download()
-            status, text = dl.download(url)
+            status, text = self.download.download(self.task, url)
             print('run_page_actions  status:%s' % status)
             # 开始处理对页面的请求，提取元素进入下一页 or 直接提取数据
             for action in self.task.add_pages:
@@ -39,20 +38,18 @@ class Crawler(object):
             elif action.next_extract_type == 're':
                 self.extract_with_re(action, text, url, **kwargs)
         else:  # 到达最后一页，开始提取数据
-            print('last page')
             # 提取数据
             if hasattr(action, 'extract_field') and len(action.extract_field) > 0:
                 if action.extract_type == 'xpath':
                     body = fromstring(text)
                     info = {}
-                    print(action.name)
                     extract_field = action.extract_field
+                    # 循环提取字段
                     for field_name in extract_field._fields:
                         rule = getattr(extract_field, field_name)
                         value = body.xpath(rule, smart_strings = False)
                         print('action name:%s field_name:%s value:%s' % (action.name, field_name, value))
                         info[field_name] = value
-                    print('name:%s last page:%s' % (action.name, info))
 
     # 通过 xpath 解析数据
     def extract_with_xpath(self, action, text, url, **kwargs):
@@ -64,15 +61,12 @@ class Crawler(object):
                 continue
             else:  # 提取下一步的 URL，进入下一步流程
                 for next_action in action.add_pages:
-                    print('action:%s result:%s' % (action.name, result))
                     next_url = urljoin(url, result)
                     # 过滤掉不相关的 URL，这里使用正则
                     if self.url_filter(action, next_url) is None:
                         continue
                     print('action:%s next_url:%s' % (action.name, next_url))
-                    dl = Download()
-                    status, text = dl.download(next_url)
-                    print('action_child:%s' % str(next_action.name))
+                    status, text = self.download.download(self.task, next_url)
                     self.run_extract_action(next_action, text, url)
 
     # 解析 json 拿到下一个入口
