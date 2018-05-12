@@ -1,0 +1,56 @@
+{
+  "global_settings": {
+    "headers": {},
+    "ua": {
+      "type": "pc_rand",
+      "ua_custom": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
+    },
+    "cookie": {
+    }
+  },
+  "init_urls": [
+    "http://api.jiefu.tv/app2/api/bq/article/list.html"
+  ],
+  "add_pages": [
+    {
+      "name": "artile_list",
+      "next": {
+        "type": "json",
+        "next_url_temp": "http://api.jiefu.tv/app2/api/bq/article/detail.html?id={{articleId}}",
+        "next_url_regex": "id=(\\d+)",
+        "next_field": {
+          "data": [
+            {
+              "title": "this_is_title",
+              "ts": "ts",
+              "userView": {
+                "id": "this_is_id",
+                "nickName": "user_name"
+              },
+              "itemView": {
+                "articleId": "articleId"
+              }
+            }
+          ]
+        }
+      },
+      "extract_field": {
+      },
+      "sample_urls": [
+        "http://api.jiefu.tv/app2/api/bq/article/detail.html?id=4674"
+      ],
+      "add_pages": [
+        {
+          "name": "article_detail",
+          "extract_type": "json",
+          "extract_field": {
+            "data": {
+              "clickNum": "clickNum"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

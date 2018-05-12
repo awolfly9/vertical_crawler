@@ -61,9 +61,9 @@ class Crawler(object):
                         value = body.xpath(key, smart_strings = False)
                         if field_value not in results:
                             results[field_value] = []
-                            results[field_value].extand(value)
+                            results[field_value].extend(value)
                         else:
-                            results[field_value].extand(value)
+                            results[field_value].extend(value)
                     self.save.save(url, '', results)
                 elif action.get('extract_type', None) == 'json':
                     body = json.loads(text)
