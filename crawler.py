@@ -31,17 +31,20 @@ class Crawler(object):
                 self.run_extract_action(action, text, url)
 
     def run_extract_action(self, action, text, url, **kwargs):
-        if action.get('next_url_regex', None) is not None:  # 提取元素进入下一页
-            if action.get('next_extract_type', None) == 'xpath':
+        next = action.get('next', None)
+        if next is not None:
+            # 提取元素进入下一页
+            if next.get('type', None) == 'xpath':
                 self.extract_with_xpath(action, text, url, **kwargs)
-            elif action.get('next_extract_type', None) == 'json':
+            elif next.get('type', None) == 'json':
                 self.extract_with_json(action, text, url, **kwargs)
-            elif action.get('next_extract_type', None) == 're':
+            elif next.get('type', None) == 're':
                 self.extract_with_re(action, text, url, **kwargs)
         else:  # 到达最后一页，开始提取数据
             # 提取数据
-            if hasattr(action, 'extract_field') and len(action.extract_field) > 0:
-                if action.extract_type == 'xpath':
+            extract_field = action.get('extract_field', None)
+            if extract_field is not None:
+                if action.get('extract_type') == 'xpath':
                     body = fromstring(text)
                     info = {}
                     extract_field = action.extract_field
@@ -51,6 +54,12 @@ class Crawler(object):
                         value = body.xpath(rule, smart_strings = False)
                         print('action name:%s field_name:%s value:%s' % (action.name, field_name, value))
                         info[field_name] = value
+                elif action.get('extract_type', None) == 'json':
+                    body = json.loads(text)
+                    extract_field = action.get('extract_field')
+                    results = {}
+                    self.get_fields(body, extract_field, results)
+                    print('results:%s' % results)
 
     # 通过 xpath 解析数据
     def extract_with_xpath(self, action, text, url, **kwargs):
@@ -83,18 +92,33 @@ class Crawler(object):
         print('results:%s' % results)
         template = Template(next.get('next_url_temp'))
         min_len = sys.maxsize
-        key_list = results.keys()
+        key_list = results.keys()  # TODO... 这里应该定向获取到某一个对象的长度
         for key, value_list in results.items():
             min_len = min(min_len, len(value_list))
-        for i in range(0, min_len):
-            kwargs = {}
-            for key in key_list:
-                kwargs[key] = results[key][i]
-            url = template.render(kwargs)
-            print('url:%s' % url)
+
+        add_pages = action.get('add_pages', None)
+        if add_pages is None:
+            # 没有下一步动作，应该提取数据
+            pass
+        else:  # 提取下一步的 URL，进入下一步流程
+            for next_action in add_pages:
+                for i in range(0, min_len):
+                    kwargs = {}
+                    for key in key_list:
+                        kwargs[key] = results[key][i]
+                    next_url = template.render(kwargs)
+                    print('url:%s' % url)
+                    if self.url_filter(next.get('next_url_regex'), next_url) is None:
+                        continue
+                    print('action:%s next_url:%s' % (action.get('name'), next_url))
+                    status, text = self.download.download(self.task, next_url)
+                    self.run_extract_action(next_action, text, url)
 
     # key 始终是要获取的值
     # value 命名
+    # body json
+    # field 要采集的数据的 缩小版 json 格式
+    # results 采集到的数据最终会存储在 results 
     def get_fields(self, body, field, results):
         def get_field():
             if isinstance(field_value, list):
@@ -105,6 +129,7 @@ class Crawler(object):
             elif isinstance(field_value, str):
                 if field_value not in results:
                     results[field_value] = []
+                    results[field_value].append(new_body)
                 else:
                     results[field_value].append(new_body)
 
@@ -121,8 +146,8 @@ class Crawler(object):
     def extract_with_re(self, action, text, url, **kwargs):
         pass
 
-    def url_filter(self, action, next_url):
-        search = re.search(action.next_url_regex, next_url)
+    def url_filter(self, next_url_regex, next_url):
+        search = re.search(next_url_regex, next_url, re.I)
         if search:
             return next_url
         else:
@@ -142,3 +167,5 @@ if __name__ == '__main__':
                 "createTime": "createTime"
               },
 '''
+# regex = 'http://api.jiefu.tv/app2/api/bq/article/detail.html?id=(\\d+)'
+# text = 'http://api.jiefu.tv/app2/api/bq/article/detail.html?id=25715'
