@@ -3,21 +3,26 @@
 import json
 import re
 from collections import namedtuple
+from web.vertical.models import Seed
 
 
 class CrawlTask(object):
-    def __init__(self):
+    def __init__(self, seed_id):
         super().__init__()
-        self.init()
+        self.init(seed_id)
 
-    def init(self):
-        with open('config.json', 'r') as f:
-            text = f.read()
-            self.crawler_json_obj = json.loads(text)
-            self.crawler_text_obj = text
-            # print(self.crawler_json_obj)
+    def init(self, seed_id):
+        self.seed = Seed.objects.filter(id = seed_id).first()
+        self.crawler_json_obj = json.loads(self.seed.rule_data)
+        self.crawler_text_obj = self.seed.rule_data
 
-        self.crawler = json.loads(text)
+        # with open('config.json', 'r') as f:
+        #     text = f.read()
+        #     self.crawler_json_obj = json.loads(text)
+        #     self.crawler_text_obj = text
+        # print(self.crawler_json_obj)
+
+        self.crawler = json.loads(self.seed.rule_data)
         # print(crawler)
         # for field in crawler._fields:
         #     setattr(self, field, getattr(crawler, field))

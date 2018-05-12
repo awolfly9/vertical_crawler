@@ -4,8 +4,15 @@ import re
 import json
 import sys
 import better_exceptions
+import os
+import django
+
+sys.path.append(os.getcwd())
+os.environ['DJANGO_SETTINGS_MODULE'] = 'web.settings'
+django.setup()
 
 from urllib.parse import urljoin
+from cralwer_save import CrawlerSave
 from cralwer_task import CrawlTask
 from download import Download
 from lxml.html import fromstring
@@ -17,7 +24,8 @@ better_exceptions.hook()
 class Crawler(object):
     def __init__(self, seed_id):
         # 初始化抓取任务
-        self.task = CrawlTask()
+        self.task = CrawlTask(seed_id)
+        self.save = CrawlerSave(self.task)
         # 初始化下载下载接口
         self.download = Download(self.task)
 
@@ -46,38 +54,41 @@ class Crawler(object):
             if extract_field is not None:
                 if action.get('extract_type') == 'xpath':
                     body = fromstring(text)
-                    info = {}
-                    extract_field = action.extract_field
+                    results = {}
+                    extract_field = action.get('extract_field')
                     # 循环提取字段
-                    for field_name in extract_field._fields:
-                        rule = getattr(extract_field, field_name)
-                        value = body.xpath(rule, smart_strings = False)
-                        print('action name:%s field_name:%s value:%s' % (action.name, field_name, value))
-                        info[field_name] = value
+                    for key, field_value in extract_field.items():
+                        value = body.xpath(key, smart_strings = False)
+                        if field_value not in results:
+                            results[field_value] = []
+                            results[field_value].extand(value)
+                        else:
+                            results[field_value].extand(value)
+                    self.save.save(url, '', results)
                 elif action.get('extract_type', None) == 'json':
                     body = json.loads(text)
                     extract_field = action.get('extract_field')
                     results = {}
                     self.get_fields(body, extract_field, results)
-                    print('results:%s' % results)
+                    self.save.save(url, text, results)
 
     # 通过 xpath 解析数据
     def extract_with_xpath(self, action, text, url, **kwargs):
         body = fromstring(text)
-        results = body.xpath(action.next_field, smart_strings = False)
-        for result in results:
-            if hasattr(action, 'add_pages') == False or len(action.add_pages) <= 0:
-                # 没有下一步动作，应该提取数据
-                continue
-            else:  # 提取下一步的 URL，进入下一步流程
-                for next_action in action.add_pages:
+        next = action.get('next')
+        next_field = next.get('next_field', {})
+        for key, field_value in next_field.items():
+            results = body.xpath(key, smart_strings = False)
+            for result in results:
+                add_pages = action.get('add_pages')
+                for next_action in add_pages:
                     next_url = urljoin(url, result)
                     # 过滤掉不相关的 URL，这里使用正则
-                    if self.url_filter(action, next_url) is None:
+                    if self.url_filter(next.get('next_url_regex'), next_url) is None:
                         continue
-                    print('action:%s next_url:%s' % (action.name, next_url))
+                    print('action:%s next_url:%s' % (action.get('name'), next_url))
                     status, text = self.download.download(self.task, next_url)
-                    self.run_extract_action(next_action, text, url)
+                    self.run_extract_action(next_action, text, next_url)
 
     # 解析 json 拿到下一个入口
     def extract_with_json(self, action, text, url, **kwargs):
@@ -112,13 +123,13 @@ class Crawler(object):
                         continue
                     print('action:%s next_url:%s' % (action.get('name'), next_url))
                     status, text = self.download.download(self.task, next_url)
-                    self.run_extract_action(next_action, text, url)
+                    self.run_extract_action(next_action, text, next_url)
 
     # key 始终是要获取的值
     # value 命名
     # body json
     # field 要采集的数据的 缩小版 json 格式
-    # results 采集到的数据最终会存储在 results 
+    # results 采集到的数据最终会存储在 results
     def get_fields(self, body, field, results):
         def get_field():
             if isinstance(field_value, list):
@@ -155,7 +166,12 @@ class Crawler(object):
 
 
 if __name__ == '__main__':
-    crawler = Crawler(seed_id = -1)
+    if len(sys.argv) > 1:
+        seed_id = sys.argv[1]
+    else:
+        seed_id = 2
+
+    crawler = Crawler(seed_id = seed_id)
     crawler.run_page_actions()
 
 '''

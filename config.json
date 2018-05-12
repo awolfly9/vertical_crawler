@@ -9,44 +9,51 @@
     }
   },
   "init_urls": [
-    "http://api.jiefu.tv/app2/api/bq/article/list.html"
+    "https://www.v2ex.com/?tab=all"
   ],
   "add_pages": [
     {
       "name": "artile_list",
       "next": {
-        "type": "json",
-        "next_url_temp": "http://api.jiefu.tv/app2/api/bq/article/detail.html?id={{articleId}}",
-        "next_url_regex": "id=(\\d+)",
+        "type": "xpath",
+        "next_url_temp": "https://www.v2ex.com/t/{{article_id}}",
+        "next_url_regex": "t/(\\d+)",
         "next_field": {
-          "data": [
-            {
-              "title": "this_is_title",
-              "ts": "ts",
-              "userView": {
-                "id": "this_is_id",
-                "nickName": "user_name"
-              },
-              "itemView": {
-                "articleId": "articleId"
-              }
-            }
-          ]
+          "//span[@class='item_title']/a/@href": "article"
         }
       },
       "extract_field": {
       },
       "sample_urls": [
-        "http://api.jiefu.tv/app2/api/bq/article/detail.html?id=4674"
+        "https://www.v2ex.com/t/453364#reply145"
       ],
       "add_pages": [
         {
           "name": "article_detail",
-          "extract_type": "json",
+          "extract_type": "xpath",
           "extract_field": {
-            "data": {
-              "clickNum": "clickNum"
-            }
+            "//div[@class='header']/h1/text()": "title"
+          }
+        }
+      ]
+    },
+    {
+      "name": "click_user_info",
+      "next_url_regex": "",
+      "next_field": "//span[@class='topic_info']/strong[1]/a/@href",
+      "next_extract_type": "xpath",
+      "extract_field": {
+      },
+      "sample_urls": [
+        "https://www.v2ex.com/member/Arbhow"
+      ],
+      "add_pages": [
+        {
+          "name": "get_user_info",
+          "extract_type": "xpath",
+          "extract_field": {
+            "username": "//h1/text()",
+            "base_info": "//table/tbody/tr/td[3]/span[@class='gray']/text()"
           }
         }
       ]
