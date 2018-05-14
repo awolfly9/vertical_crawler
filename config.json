@@ -52,8 +52,8 @@
           "name": "get_user_info",
           "extract_type": "xpath",
           "extract_field": {
-            "username": "//h1/text()",
-            "base_info": "//table/tbody/tr/td[3]/span[@class='gray']/text()"
+            "//h1/text()": "username",
+            "//table/tbody/tr/td[3]/span[@class='gray']/text()": "baseinfo"
           }
         }
       ]

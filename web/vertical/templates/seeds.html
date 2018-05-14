@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block context %}
+    <div class="index-wrapper">
+        <div class="index-content">
+            <ul class="artical-list">
+                {% if seeds %}
+                    {% for seed in seeds %}
+                        <li>
+                            <a href="{% url "seed" %}" class="title">{{ seed.name }}</a>
+                            <div class="title-desc">{{ seed.name }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+
+</body>
+</html>

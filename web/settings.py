@@ -53,7 +53,9 @@ ROOT_URLCONF = 'web.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,3 +119,15 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+# STATICFILES_DIRS = (
+#     ("css", os.path.join(STATIC_ROOT, 'css')),
+#     ("js", os.path.join(STATIC_ROOT, 'js')),
+#     ("images", os.path.join(STATIC_ROOT, 'images')),
+#     ("assets", os.path.join(STATIC_ROOT, 'assets')),
+#     ("upload", os.path.join(STATIC_ROOT, 'upload')),
+#     ("ckeditor", os.path.join(STATIC_ROOT, 'ckeditor')),
+# )
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
