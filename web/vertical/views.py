@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 
 from django.views import View
@@ -57,3 +58,26 @@ class AddSeedView(View):
                 }]
         }
         return render(request, 'addseed.html', context = context)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST.dict())
+        seed = request.POST.get('seed_id', None)
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        run_interval = request.POST.get('run_interval')
+        rule_data = request.POST.get('rule_data')
+
+        print('rule_data:%s' % rule_data)
+        info = {
+            'name': name,
+            'description': description,
+            'run_interval': run_interval,
+            'rule_data': rule_data,
+        }
+        Seed.objects.update_or_create(id = seed, defaults = info)
+        context = {
+            # 'seed': seed,
+            'status': 200
+        }
+        # return render(request, 'addseed.html', context = context)
+        return JsonResponse(context)

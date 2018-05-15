@@ -38,7 +38,25 @@
     <!--</div>-->
     <!--</form>-->
     <form autocomplete="on">
-        <div class="page-actions">
+        {% csrf_token %}
+        <div class="seed-name">
+            <span>种子名称</span>
+            <input type="text" class="action-name input-group-sm" value="">
+        </div>
+        <div class="seed-desc">
+            <span>种子描述</span>
+            <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+        </div>
+        <div class="seed-run-interval">
+            <span>运行间隔</span>
+            <input type="text" class="action-name input-group-sm" value="">
+        </div>
+        <div class="seed-init-url">
+            <span>初始种子链接</span>
+            <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+        </div>
+        <br>
+        <div class="page-actions" id="page-actions">
             <ul class="page-action">
                 <li class="action">
                     <div class="action-name">
@@ -84,12 +102,12 @@
             </ul>
         </div>
 
-        <div class="addPagesField"><i class="fa fa-plus"></i>添加 Page Action</div>
+        <div class="add-page-action"><i class="fa fa-plus"></i>添加 Page Action</div>
         <div class="test-parse-data"><i class="fa fa-plus"></i>测试提取数据</div>
     </form>
 
     <button type="button" class="btn btn-default">取消</button>
-    <button type="button" class="btn btn-primary">保存</button>
+    <button type="button" class="btn btn-primary save-config">保存</button>
     <button type="button" class="btn btn-primary">调试</button>
 </div>
 
@@ -143,8 +161,8 @@
         '                </li>\n' +
         '            </ul>';
 
-    $(".addPagesField").click(function () {
-        $('#addPages').append(temp_data)
+    $(".add-page-action").click(function () {
+        $('#page-actions').append(temp_data)
     });
 
 
@@ -168,22 +186,65 @@
 
     function parse_page_action_list(page_action_item) {
         var page_datas = [];
-        page_action_item.each(function (i, n) {  // 遍历子节点，获取输入数据
+        page_action_item.each(function (i, item) {  // 遍历子节点，获取输入数据
             var data = {};
-            var obj = $(n);
+            var obj = $(item);
             var action = obj.find('.action');
-            var action_name = action.find('.action-name');
-            console.log(action_name);
-            var action_name_value = action_name.find('input').val();
-            console.log(action_name_value);
-            data['action_name'] = action_name_value;
+            var action_name = action.find('.action-name');  // name
+            data['action_name'] = action_name.find('input').val();
+            data['next'] = {};
+            var action_next = action.find('.action-next');  // next
+            data['next']['type'] = action_next.find('select').find(":selected").text();
+            data['next']['url_temp'] = action_next.find('.next-temp').find('input').val();
+            data['next']['url_regex'] = action_next.find('.next-regex').find('input').val();
+            // next_field  todo... 现在需要输入 json 格式
+            data['next']['next_field'] = JSON.parse(action_next.find('.next-field').find('textarea').val());
 
+            // extract  todo...
+            data['extract_field'] = action.find('.action-extract').find('textarea').val().split('\n');
+            // sample
+            data['sample_urls'] = action.find('.action-sample').find('textarea').val().split('\n');
             var child_action_item = action.find(".page-action");
-            data['add_pages'] = parse_page_action_list(child_action_item);
+            var add_pages = parse_page_action_list(child_action_item);
+            if (add_pages.length > 0) {
+                data['add_pages'] = add_pages;
+            }
             page_datas.push(data);
         });
         return page_datas;
     }
+
+    $('.save-config').on('click', function (event) {
+        var name = $(".seed-name").find("input").val();  //
+        var description = $(".seed-desc").find("textarea").val(); //
+        var run_interval = $(".seed-run-interval").find("input").val(); //
+        var init_url = $(".seed-init-url").find("textarea").val().split('\n'); //
+        var page_actions = $(".page-actions"); // 获取到跟节点 page-actions //
+        var page_action_item = page_actions.children('.page-action'); // 获取到第一层的 page-action 列表
+        var add_page_datas = parse_page_action_list(page_action_item);
+
+        var rule_data = {
+            "init_url": init_url,
+            "add_pages": add_page_datas
+        };
+        var data = {
+            'seed_id': 3,
+            'name': name,
+            'description': description,
+            'run_interval': run_interval,
+            'rule_data': JSON.stringify(rule_data)
+        };
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            url: '/vertical/addseed/',
+            data: data,
+            dataType: "json",
+            success: function (body) {
+                console.log(body)
+            }
+        });
+    });
 </script>
 </body>
 </html>
