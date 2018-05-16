@@ -39,23 +39,59 @@
     <!--</form>-->
     <form autocomplete="on">
         {% csrf_token %}
-        <div class="seed-name">
-            <span>种子名称</span>
-            <input type="text" class="action-name input-group-sm" value="">
-        </div>
-        <div class="seed-desc">
-            <span>种子描述</span>
-            <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
-        </div>
-        <div class="seed-run-interval">
-            <span>运行间隔</span>
-            <input type="text" class="action-name input-group-sm" value="">
-        </div>
-        <div class="seed-init-url">
-            <span>初始种子链接</span>
-            <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+        <div class="seed-info">
+            <div class="seed-name">
+                <span>种子名称</span>
+                <input type="text" class="action-name input-group-sm" value="">
+            </div>
+            <div class="seed-desc">
+                <span>种子描述</span>
+                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+            </div>
+            <div class="seed-run-interval">
+                <span>运行间隔</span>
+                <input type="text" class="action-name input-group-sm" value="">
+            </div>
         </div>
         <br>
+        <p>设置</p>
+        <div class="seet-setting">
+            <div class="seed-setting-header">
+                <span>HEADER</span>
+                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+            </div>
+            <div class="seed-setting-header">
+                <span>User-Agent</span>
+                <select class="us-type">
+                    <option value="pc_rand">pc_rand</option>
+                    <option value="mobild_rand">mobild_rand</option>
+                    <option value="weixin">weixin</option>
+                </select>
+            </div>
+            <div class="seed-setting-header">
+                <span>Cookie 支持</span>
+                <select class="cookie-type">
+                    <option value="A 站点">A 站点</option>
+                    <option value="B 站点">B 站点</option>
+                    <option value="C 站点">C 站点</option>
+                </select>
+            </div>
+        </div>
+        <div class="seed-init">
+            <div class="seed-type">
+                <span>初始话链接</span>
+                <select class="cookie-type">
+                    <option value="list">list</option>
+                    <option value="template">template</option>
+                    <option value="pyfunc">pyfunc</option>
+                </select>
+            </div>
+            <div class="seed-init-url">
+                <span>初始种子链接</span>
+                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+            </div>
+        </div>
+
         <div class="page-actions" id="page-actions">
             <ul class="page-action">
                 <li class="action">
@@ -218,17 +254,25 @@
         var name = $(".seed-name").find("input").val();  //
         var description = $(".seed-desc").find("textarea").val(); //
         var run_interval = $(".seed-run-interval").find("input").val(); //
-        var init_url = $(".seed-init-url").find("textarea").val().split('\n'); //
+        var init_type = $(".seed-type").find('select').find(":selected").text();
+        var init_info = $(".seed-init-url").find("textarea").val(); //
         var page_actions = $(".page-actions"); // 获取到跟节点 page-actions //
         var page_action_item = page_actions.children('.page-action'); // 获取到第一层的 page-action 列表
         var add_page_datas = parse_page_action_list(page_action_item);
 
+        if (init_type === 'list') {
+            init_info = init_info.split('\n')
+        }
+
         var rule_data = {
-            "init_url": init_url,
+            "seed_init": {
+                "init_type": init_type,
+                "init_info": init_info
+            },
             "add_pages": add_page_datas
         };
         var data = {
-            'seed_id': 3,
+            // 'seed_id': 3,
             'name': name,
             'description': description,
             'run_interval': run_interval,

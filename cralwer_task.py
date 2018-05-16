@@ -38,7 +38,18 @@ class CrawlTask(object):
 
     @property
     def init_urls(self):
-        return self.crawler.get('init_urls', [])
+        seed_init = self.crawler.get('seed_init', {})
+        init_type = seed_init.get('init_type')
+        if init_type == 'pyfunc':
+            code = seed_init.get('init_info')
+            exec(code, globals())
+            urls = init_func()  # TODO...
+            print("urls:%s" % urls)
+            return []
+        elif init_type == 'template':
+            return
+        elif init_type == 'list':
+            return
 
     @property
     def add_pages(self):
