@@ -49,7 +49,7 @@ class CrawlTask(object):
         elif init_type == 'template':
             return
         elif init_type == 'list':
-            return
+            return seed_init.get('init_info')
 
     @property
     def add_pages(self):

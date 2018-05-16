@@ -8,9 +8,12 @@
     "cookie": {
     }
   },
-  "init_urls": [
-    "https://www.v2ex.com/?tab=all"
-  ],
+  "seed_init": {
+    "init_type": "list",
+    "init_urls": [
+      "https://www.v2ex.com/?tab=all"
+    ]
+  },
   "add_pages": [
     {
       "name": "artile_list",
