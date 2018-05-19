@@ -1,9 +1,13 @@
+import logging
+
 from django.http import JsonResponse
 from django.shortcuts import render
 
 from django.views import View
 
 from web.vertical.models import Seed
+
+logger = logging.getLogger('dba_logfile')
 
 
 class SeedListView(View):
@@ -29,6 +33,7 @@ class SeedView(View):
 
 class AddSeedView(View):
     def get(self, request):
+        logger.warning(msg = 'djfajsdk')
         context = {
             "add_pages": [
                 {

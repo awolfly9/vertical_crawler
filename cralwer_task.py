@@ -55,6 +55,10 @@ class CrawlTask(object):
     def add_pages(self):
         return self.crawler.get('add_pages', [])
 
+    @property
+    def seed_init(self):
+        return self.crawler.get('seed_init', {})
+
 
 def extract_json_body(extract_fields, root):
     slocator = extract_fields.slocator

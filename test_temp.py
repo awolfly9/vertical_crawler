@@ -1,11 +1,11 @@
 # -*- coding=utf-8 -*-
-
+#
 from jinja2 import Template
 
-template = Template('Hello {{ name }}!')
+template = Template('http://awolfly9.com/{{article}}')
 
 print(dir(template))
-x = template.render(dsafdsa = 'John Doe', fakdsjl = 'fjksdjlk', name = 'faaaaaa')
+x = template.render(article = 'faaaaaa')
 print(x)
 print(type(x))
 
@@ -17,58 +17,57 @@ print(type(x))
 #
 # func = '''
 #
-x = []
-x.append('a')
-x.append('b')
-x.append('c')
-print(x)
+
 # '''
 #
 # print(exec(func))
 #
 # import sys
 #
-# # import StringIO
 #
-# # create file-like string to capture output
-# # codeOut = StringIO.StringIO()
-# # codeErr = StringIO.StringIO()
-#
+# #
 # code = """
 # def f(x):
-#     r = requests.get('http://awolfly9.com/')
-#     return r
 #     # # x = x + 1
 #     # # return x
-#     # x = []
-#     # x.append('a')
-#     # x.append('b')
-#     # x.append('c')
-#     # return x
+#     x = []
+#     x.append('a')
+#     x.append('b')
+#     x.append('c')
+#     return x
 # print ('This is my output.')
 # """
 #
-# # capture output and errors
-# # sys.stdout = codeOut
-# # sys.stderr = codeErr
-#
 # exec(code)
 #
-# # restore stdout and stderr
-# # sys.stdout = sys.__stdout__
-# # sys.stderr = sys.__stderr__
-#
 # r = f(3)
-# print(r.status_code)
-# print(r.text)
-# #
-# # s = codeErr.getvalue()
-# #
-# # print("error:\n%s\n" % s)
-# #
-# # s = codeOut.getvalue()
-# #
-# # print("output:\n%s" % s)
-# #
-# # codeOut.close()
-# # codeErr.close()
+# # print(r.status_code)
+# print(r)
+
+code = '''
+def init_func():
+    urls = [
+        'http://api.jiefu.tv/app2/api/bq/article/detail.html?id=4674',
+        'http://api.jiefu.tv/app2/api/bq/article/detail.html?id=4674',
+        'http://api.jiefu.tv/app2/api/bq/article/detail.html?id=4674',
+    ]
+    return urls
+'''
+
+
+class Test(object):
+    def init(self):
+        print('code:%s' % code)
+        # l, g = locals().copy(), globals().copy()
+        exec(code, globals())
+        x = init_func()
+        print(x)
+
+
+t = Test()
+t.init()
+
+#
+# if __name__ == '__main__':
+#     t = Test()
+#     t.init()

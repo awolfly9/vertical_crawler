@@ -10,57 +10,31 @@
   },
   "seed_init": {
     "init_type": "list",
-    "init_urls": [
-      "https://www.v2ex.com/?tab=all"
-    ]
-  },
-  "add_pages": [
-    {
-      "name": "artile_list",
-      "next": {
-        "type": "xpath",
-        "next_url_temp": "https://www.v2ex.com/t/{{article_id}}",
-        "next_url_regex": "t/(\\d+)",
-        "next_field": {
-          "//span[@class='item_title']/a/@href": "article"
-        }
-      },
-      "extract_field": {
-      },
-      "sample_urls": [
-        "https://www.v2ex.com/t/453364#reply145"
-      ],
-      "add_pages": [
-        {
-          "name": "article_detail",
-          "extract_type": "xpath",
-          "extract_field": {
-            "//div[@class='header']/h1/text()": "title"
-          }
-        }
-      ]
+    "init_info": [
+      "http://awolfly9.com/"
+    ],
+    "extract_fields": {
+      "type": "None",
+      "fields": "{}"
     },
-    {
-      "name": "click_user_info",
-      "next_url_regex": "",
-      "next_field": "//span[@class='topic_info']/strong[1]/a/@href",
-      "next_extract_type": "xpath",
-      "extract_field": {
-      },
-      "sample_urls": [
-        "https://www.v2ex.com/member/Arbhow"
-      ],
-      "add_pages": [
-        {
-          "name": "get_user_info",
-          "extract_type": "xpath",
-          "extract_field": {
-            "//h1/text()": "username",
-            "//table/tbody/tr/td[3]/span[@class='gray']/text()": "baseinfo"
-          }
+    "add_pages": [
+      {
+        "action_name": "文章页",
+        "next": {
+          "url_temp": "http://awolfly9.com/{{article}}",
+          "url_regex": "article/\\w+",
+          "type": "xpath",
+          "fields": "{\"//a[@class='title']/@href\": \"article\"}",
+          "sample_urls": [
+            "http://awolfly9.com/article/tianjin"
+          ]
+        },
+        "extract_fields": {
+          "type": "xpath",
+          "fields": "{\"//h1[@class='post-title']/a/text()\": \"title\"}"
         }
-      ]
-    }
-  ]
+      }
+    ]
+  }
 }
 

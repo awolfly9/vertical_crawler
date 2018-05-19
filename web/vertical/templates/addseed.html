@@ -58,7 +58,7 @@
         <div class="seet-setting">
             <div class="seed-setting-header">
                 <span>HEADER</span>
-                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
+                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60">{}</textarea>
             </div>
             <div class="seed-setting-header">
                 <span>User-Agent</span>
@@ -77,7 +77,12 @@
                 </select>
             </div>
         </div>
-        <div class="seed-init">
+        <br>
+        <div class="seed-init bg-secondary">
+            <div class="action-name">
+                <span>名称</span>
+                <input type="text" class="action-name input-group-sm" value="" autocomplete="off">
+            </div>
             <div class="seed-type">
                 <span>初始链接类型</span>
                 <select class="cookie-type">
@@ -89,37 +94,43 @@
             <div class="seed-init-url">
                 <span>初始种子链接</span>
                 <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
-                <span class="bg-danger">模板信息使用 jinja2  可以自定义方法</span>
+                <span class="bg-danger">模板信息使用 jinja2  可以方法, 方法名是:init_urls_func</span>
+            </div>
+            <div class="action-extract">
+                <div class="extract-type">
+                    <span>提取 type</span>
+                    <select class="extract-type">
+                        <option value="None">None</option>
+                        <option value="xpath">xpath</option>
+                        <option value="json">json</option>
+                        <option value="re">re</option>
+                        <option value="pyfunc">pyfunc</option>
+                        <option value="saveall">saveall</option>
+                    </select>
+                </div>
+                <div>
+                    <span>提取数据</span>
+                    <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60">{}</textarea>
+                    <span class="bg-danger">现在输入 json 或者方法,方法名是：extract_fields_func</span>
+                </div>
             </div>
         </div>
 
         <div class="page-actions" id="page-actions">
             <ul class="page-action bg-warning">
                 <li class="action">
-                    <div class="action-name">
-                        <span>名称</span>
-                        <input type="text" class="action-name input-group-sm" value="" autocomplete="off">
-                    </div>
-                    <div class="action-extract">
-                        <div class="extract-type">
-                            <span>提取 type</span>
-                            <select class="extract-type">
-                                <option value="xpath">xpath</option>
-                                <option value="json">json</option>
-                                <option value="re">re</option>
-                                <option value="pyfunc">pyfunc</option>
-                                <option value="saveall">saveall</option>
-                            </select>
-                        </div>
-                        <div>
-                            <span>提取数据</span>
-                            <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
-                            <span class="bg-danger">现在输入 json 或者 自定义方法</span>
-                        </div>
-                    </div>
+                    <!--<div class="action-name">-->
+                    <!--<span>名称</span>-->
+                    <!--<input type="text" class="action-name input-group-sm" value="" autocomplete="off">-->
+                    <!--</div>-->
+
                     <div class="action-next bg-secondary">
                         <span>下一步动作</span>
                         <ul class="page-next-action">
+                            <div class="action-name">
+                                <span>名称</span>
+                                <input type="text" class="action-name input-group-sm" value="" autocomplete="off">
+                            </div>
                             <div class="next-temp">
                                 <span>URL 模板</span>
                                 <input type="text" class="input-group-sm" size="65" value=""/>
@@ -133,6 +144,7 @@
                             <div class="extract-type">
                                 <span>提取 type</span>
                                 <select class="extract-type">
+                                    <option value="None">None</option>
                                     <option value="xpath">xpath</option>
                                     <option value="json">json</option>
                                     <option value="re">re</option>
@@ -140,19 +152,37 @@
                                     <option value="saveall">saveall</option>
                                 </select>
                             </div>
-                            <div>
-                                <span>提取数据</span>
-                                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
-                                <span class="bg-danger">现在输入 json 或者 自定义方法</span>
+                            <div class="extract-fields">
+                                <span>提取下一步的模板数据</span>
+                                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60">{}</textarea>
+                                <span class="bg-danger">现在输入 json 或者方法,方法名是extract_fields_func</span>
                             </div>
                             <div class="action-sample">
                                 <span>示例链接</span>
                                 <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>
                             </div>
+                            <div class="action-extract bg-info">
+                                <div class="extract-type">
+                                    <span>提取 type</span>
+                                    <select class="extract-type">
+                                        <option value="None">None</option>
+                                        <option value="xpath">xpath</option>
+                                        <option value="json">json</option>
+                                        <option value="re">re</option>
+                                        <option value="pyfunc">pyfunc</option>
+                                        <option value="saveall">saveall</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span>提取数据</span>
+                                    <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60">{}</textarea>
+                                    <span class="bg-danger">现在输入 json 或者方法,方法名是：extract_fields_func</span>
+                                </div>
+                            </div>
+                            <div class="action-remove-self">删除自己</div>
+                            <div class="action-add-child">添加子节点</div>
                         </ul>
                     </div>
-                    <div class="action-remove-self">删除自己</div>
-                    <div class="action-add-child">添加子节点</div>
                 </li>
             </ul>
         </div>
@@ -172,40 +202,27 @@
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
 
 <script>
-    var temp_data = ' <ul class="page-action bg-warning">\n' +
-        '                <li class="action">\n' +
-        '                    <div class="action-name">\n' +
-        '                        <span>名称</span>\n' +
-        '                        <input type="text" class="action-name input-group-sm" value="" autocomplete="off">\n' +
-        '                    </div>\n' +
-        '                    <div class="action-extract">\n' +
-        '                        <div class="extract-type">\n' +
-        '                            <span>提取 type</span>\n' +
-        '                            <select class="extract-type">\n' +
-        '                                <option value="xpath">xpath</option>\n' +
-        '                                <option value="json">json</option>\n' +
-        '                                <option value="re">re</option>\n' +
-        '                                <option value="pyfunc">pyfunc</option>\n' +
-        '                                <option value="saveall">saveall</option>\n' +
-        '                            </select>\n' +
-        '                        </div>\n' +
-        '                        <span>提取数据</span>\n' +
-        '                        <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>\n' +
-        '                    </div>\n' +
-        '                    <div class="action-next bg-secondary">\n' +
+    var temp = '<div class="action-next bg-secondary">\n' +
         '                        <span>下一步动作</span>\n' +
         '                        <ul class="page-next-action">\n' +
+        '                            <div class="action-name">\n' +
+        '                                <span>名称</span>\n' +
+        '                                <input type="text" class="action-name input-group-sm" value="" autocomplete="off">\n' +
+        '                            </div>\n' +
         '                            <div class="next-temp">\n' +
         '                                <span>URL 模板</span>\n' +
         '                                <input type="text" class="input-group-sm" size="65" value=""/>\n' +
+        '                                <span class="bg-danger">模板信息使用 jinja2  </span>\n' +
         '                            </div>\n' +
         '                            <div class="next-regex">\n' +
         '                                <span>URL 正则</span>\n' +
         '                                <input type="text" class="" size="65" value=""/>\n' +
+        '                                <span class="bg-danger">主要用来过滤不需要抓取 URL</span>\n' +
         '                            </div>\n' +
         '                            <div class="extract-type">\n' +
         '                                <span>提取 type</span>\n' +
         '                                <select class="extract-type">\n' +
+        '                                    <option value="None">None</option>\n' +
         '                                    <option value="xpath">xpath</option>\n' +
         '                                    <option value="json">json</option>\n' +
         '                                    <option value="re">re</option>\n' +
@@ -213,17 +230,41 @@
         '                                    <option value="saveall">saveall</option>\n' +
         '                                </select>\n' +
         '                            </div>\n' +
-        '                            <span>提取数据</span>\n' +
-        '                            <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>\n' +
+        '                            <div class="extract-fields">\n' +
+        '                                <span>提取下一步的模板数据</span>\n' +
+        '                                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60">{}</textarea>\n' +
+        '                                <span class="bg-danger">现在输入 json 或者方法,方法名是extract_fields_func</span>\n' +
+        '                            </div>\n' +
         '                            <div class="action-sample">\n' +
         '                                <span>示例链接</span>\n' +
         '                                <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60"></textarea>\n' +
         '                            </div>\n' +
+        '                            <div class="action-extract bg-info">\n' +
+        '                                <div class="extract-type">\n' +
+        '                                    <span>提取 type</span>\n' +
+        '                                    <select class="extract-type">\n' +
+        '                                        <option value="None">None</option>\n' +
+        '                                        <option value="xpath">xpath</option>\n' +
+        '                                        <option value="json">json</option>\n' +
+        '                                        <option value="re">re</option>\n' +
+        '                                        <option value="pyfunc">pyfunc</option>\n' +
+        '                                        <option value="saveall">saveall</option>\n' +
+        '                                    </select>\n' +
+        '                                </div>\n' +
+        '                                <div>\n' +
+        '                                    <span>提取数据</span>\n' +
+        '                                    <textarea type="text" class="" style="white-space:nowrap; overflow:scroll; vertical-align: top;" cols="60">{}</textarea>\n' +
+        '                                    <span class="bg-danger">现在输入 json 或者方法,方法名是：extract_fields_func</span>\n' +
+        '                                </div>\n' +
+        '                            </div>\n' +
+        '                            <div class="action-remove-self">删除自己</div>\n' +
+        '                            <div class="action-add-child">添加子节点</div>\n' +
         '                        </ul>\n' +
-        '                    </div>\n' +
-        '                    <div class="action-remove-self">删除自己</div>\n' +
-        '                    <div class="action-add-child">添加子节点</div>\n' +
-        '<br>' +
+        '                    </div>';
+
+    var temp_data = '<ul class="page-action bg-warning">\n' +
+        '                <li class="action">\n' +
+        temp +
         '                </li>\n' +
         '            </ul>';
 
@@ -256,21 +297,28 @@
             var data = {};
             var obj = $(item);
             var action = obj.find('.action');
-            var action_name = action.find('.action-name');  // name
-            data['action_name'] = action_name.find('input').val();
+            data['action_name'] = action.find('.action-name').find('input').val(); // name
+            //action-extract
+            // data['extract'] = {};
+            // data['extract']['type'] = action.find('.action-extract').find(':selected').text();
+            // data['extract']['fields'] = action.find('.action-extract').find('textarea').val();
             data['next'] = {};
             var action_next = action.find('.action-next');  // next
-            data['next']['type'] = action_next.find('select').find(":selected").text();
+            // data['next']['type'] = action_next.find('select').find(":selected").text();
             data['next']['url_temp'] = action_next.find('.next-temp').find('input').val();
             data['next']['url_regex'] = action_next.find('.next-regex').find('input').val();
             // next_field  todo... 现在需要输入 json 格式
-            data['next']['next_field'] = JSON.parse(action_next.find('.next-field').find('textarea').val());
-
-            // extract  todo...
-            data['extract_field'] = action.find('.action-extract').find('textarea').val().split('\n');
+            data['next']['type'] = action_next.find('.extract-type').find(':selected').val();
+            // data['next']['fields'] = JSON.parse(action_next.find('.extract-fields').find('textarea').val());
+            data['next']['fields'] = action_next.find('.extract-fields').find('textarea').val();
             // sample
-            data['sample_urls'] = action.find('.action-sample').find('textarea').val().split('\n');
+            data['next']['sample_urls'] = action.find('.action-sample').find('textarea').val().split('\n');
             var child_action_item = action.find(".page-action");
+
+            data['extract_fields'] = {};
+            data['extract_fields']['type'] = action.find('.action-extract').find(':selected').val();
+            data['extract_fields']['fields'] = action.find('.action-extract').find('textarea').val();
+
             var add_pages = parse_page_action_list(child_action_item);
             if (add_pages.length > 0) {
                 data['add_pages'] = add_pages;
@@ -281,11 +329,17 @@
     }
 
     $('.save-config').on('click', function (event) {
-        var name = $(".seed-name").find("input").val();  //
-        var description = $(".seed-desc").find("textarea").val(); //
-        var run_interval = $(".seed-run-interval").find("input").val(); //
-        var init_type = $(".seed-type").find('select').find(":selected").text();
-        var init_info = $(".seed-init-url").find("textarea").val(); //
+        var seed_init = $('.seed-init');
+        var name = seed_init.find(".seed-name").find("input").val();  //
+        var description = seed_init.find(".seed-desc").find("textarea").val(); //
+        var run_interval = seed_init.find(".seed-run-interval").find("input").val(); //
+        var init_type = seed_init.find(".seed-type").find('select').find(":selected").text();
+        var init_info = seed_init.find(".seed-init-url").find("textarea").val(); //
+        var extract_type = seed_init.find(".action-extract").find(":selected").text(); //
+        var extract_info = seed_init.find(".action-extract").find("textarea").val(); //
+        // 首先获取初始用户的提取数据
+
+        // 再乡下递归到下一步动作
         var page_actions = $(".page-actions"); // 获取到跟节点 page-actions //
         var page_action_item = page_actions.children('.page-action'); // 获取到第一层的 page-action 列表
         var add_page_datas = parse_page_action_list(page_action_item);
@@ -297,9 +351,13 @@
         var rule_data = {
             "seed_init": {
                 "init_type": init_type,
-                "init_info": init_info
-            },
-            "add_pages": add_page_datas
+                "init_info": init_info,
+                "extract_fields": {
+                    "type": extract_type,
+                    "fields": extract_info
+                },
+                "add_pages": add_page_datas
+            }
         };
         var data = {
             // 'seed_id': 3,
@@ -315,7 +373,8 @@
             data: data,
             dataType: "json",
             success: function (body) {
-                console.log(body)
+                console.log(body);
+                alert('成功保存');
             }
         });
     });

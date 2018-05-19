@@ -1,3 +1,5 @@
+import time
+
 from django.db import models
 
 
@@ -29,6 +31,7 @@ class Seed(models.Model):
 
 class Result(models.Model):
     seed_id = models.IntegerField(default = 0, null = True)
+    url_id = models.BigIntegerField(max_length = 32, default = time.time() * 1000, null = False, unique = True)
     crawler_name = models.CharField(max_length = 100, default = None, null = True)
     crawler_url = models.CharField(max_length = 1024, default = None, null = True)
     crawler_url_id = models.BigIntegerField(default = 0, null = True)
